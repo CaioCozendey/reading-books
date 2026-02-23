@@ -5,12 +5,12 @@ import { getAuth } from 'firebase/auth';
 // IMPORTANTE: Substitua com suas credenciais do Firebase
 // Você obterá essas informações no console do Firebase
 const firebaseConfig = {
-  apiKey: "SUA_API_KEY_AQUI",
-  authDomain: "SEU_AUTH_DOMAIN_AQUI",
-  projectId: "SEU_PROJECT_ID_AQUI",
-  storageBucket: "SEU_STORAGE_BUCKET_AQUI",
-  messagingSenderId: "SEU_MESSAGING_SENDER_ID_AQUI",
-  appId: "SEU_APP_ID_AQUI"
+  apiKey: "AIzaSyBBK3p52tvVa9UXl7E0xPtJ88J1Ra0Tw_A",
+  authDomain: "minha-lista-leitura.firebaseapp.com",
+  projectId: "minha-lista-leitura",
+  storageBucket: "minha-lista-leitura.firebasestorage.app",
+  messagingSenderId: "588619148437",
+  appId: "1:588619148437:web:fc824d2be8f66cc6c4ff9c"
 };
 
 // Inicializa o Firebase

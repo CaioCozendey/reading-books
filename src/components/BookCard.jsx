@@ -39,7 +39,7 @@ const BookCard = ({ book, onEdit }) => {
           <img
             src={book.imageUrl}
             alt={book.title}
-            className="w-full h-full object-cover"
+            className="w-auto h-full object-cover mx-auto"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-gray-400 dark:text-gray-500">
