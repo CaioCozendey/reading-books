@@ -4,13 +4,14 @@ import { getAuth } from 'firebase/auth';
 
 // IMPORTANTE: Substitua com suas credenciais do Firebase
 // Você obterá essas informações no console do Firebase
+
 const firebaseConfig = {
-  apiKey: "AIzaSyBBK3p52tvVa9UXl7E0xPtJ88J1Ra0Tw_A",
-  authDomain: "minha-lista-leitura.firebaseapp.com",
-  projectId: "minha-lista-leitura",
-  storageBucket: "minha-lista-leitura.firebasestorage.app",
-  messagingSenderId: "588619148437",
-  appId: "1:588619148437:web:fc824d2be8f66cc6c4ff9c"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
 // Inicializa o Firebase
