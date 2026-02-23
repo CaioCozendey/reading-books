@@ -1,0 +1,47 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Regras para a coleção de livros
+    match /books/{bookId} {
+      // Permite leitura apenas dos próprios livros
+      allow read: if request.auth != null && 
+                     resource.data.userId == request.auth.uid;
+      
+      // Permite criar apenas com userId igual ao do usuário autenticado
+      allow create: if request.auth != null && 
+                       request.resource.data.userId == request.auth.uid &&
+                       request.resource.data.title is string &&
+                       request.resource.data.title.size() > 0;
+      
+      // Permite atualizar apenas os próprios livros
+      allow update: if request.auth != null && 
+                       resource.data.userId == request.auth.uid;
+      
+      // Permite deletar apenas os próprios livros
+      allow delete: if request.auth != null && 
+                       resource.data.userId == request.auth.uid;
+    }
+    
+    // Regras para a coleção de categorias
+    match /categories/{categoryId} {
+      // Permite leitura apenas das próprias categorias
+      allow read: if request.auth != null && 
+                     resource.data.userId == request.auth.uid;
+      
+      // Permite criar apenas com userId igual ao do usuário autenticado
+      allow create: if request.auth != null && 
+                       request.resource.data.userId == request.auth.uid &&
+                       request.resource.data.name is string &&
+                       request.resource.data.name.size() > 0;
+      
+      // Permite atualizar apenas as próprias categorias
+      allow update: if request.auth != null && 
+                       resource.data.userId == request.auth.uid;
+      
+      // Permite deletar apenas as próprias categorias
+      allow delete: if request.auth != null && 
+                       resource.data.userId == request.auth.uid;
+    }
+  }
+}
