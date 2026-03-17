@@ -16,7 +16,7 @@ const Dashboard = ({ books }) => {
       bgLight: 'bg-blue-50 dark:bg-blue-900/20'
     },
     {
-      title: 'Já Lidos',
+      title: 'Lidos',
       value: stats.read,
       icon: '✅',
       bgColor: 'bg-green-500',
@@ -62,17 +62,17 @@ const Dashboard = ({ books }) => {
             </div>
           </div>
           
-          {/* Barra de progresso para "Já Lidos" */}
-          {stat.title === 'Já Lidos' && stats.total > 0 && (
+          {/* Barra de progresso para "Lidos" */}
+          {stat.title === 'Lidos' && stats.total > 0 && (
             <div className="mt-4">
               <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                 <div
                   className={`${stat.bgColor} h-2 rounded-full transition-all duration-300`}
-                  style={{ width: `${(stats.read / stats.total) * 100}%` }}
+                  style={{ width: `${(stats.read / stats.purchased) * 100}%` }}
                 ></div>
               </div>
               <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 text-right">
-                {Math.round((stats.read / stats.total) * 100)}% concluído
+                {Math.round((stats.read / stats.purchased) * 100)}% concluído
               </p>
             </div>
           )}
