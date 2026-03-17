@@ -22,25 +22,28 @@ const AddBook = () => {
   const [categories, setCategories] = useState([]);
 
   // Carregar categorias do Firebase (do usuário logado)
-  useEffect(() => {
-    if (!user) return;
-    
-    const q = query(
-      collection(db, 'categories'),
-      where('userId', '==', user.uid),
-      orderBy('name')
-    );
-    
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const categoriesData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      setCategories(categoriesData);
-    });
+// Carregar categorias do Firebase (do usuário logado)
+useEffect(() => {
+  if (!user) return;
+  
+  const q = query(
+    collection(db, 'categories'),
+    where('userId', '==', user.uid)
+    // Removemos o orderBy('name') temporariamente
+  );
+  
+  const unsubscribe = onSnapshot(q, (snapshot) => {
+    const categoriesData = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+    // Ordenamos no JavaScript ao invés do Firestore
+    categoriesData.sort((a, b) => a.name.localeCompare(b.name));
+    setCategories(categoriesData);
+  });
 
-    return () => unsubscribe();
-  }, [user]);
+  return () => unsubscribe();
+}, [user]);
 
   useEffect(() => {
     if (editBook) {
