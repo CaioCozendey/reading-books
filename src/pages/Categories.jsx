@@ -11,18 +11,20 @@ const Categories = () => {
 
   useEffect(() => {
     if (!user) return;
-    
+
     const q = query(
       collection(db, 'categories'),
-      where('userId', '==', user.uid),
-      orderBy('name')
+      where('userId', '==', user.uid)
+      // Removemos o orderBy('name') temporariamente
     );
-    
+
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const categoriesData = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       }));
+      // Ordenamos no JavaScript ao invés do Firestore
+      categoriesData.sort((a, b) => a.name.localeCompare(b.name));
       setCategories(categoriesData);
     });
 
@@ -31,7 +33,7 @@ const Categories = () => {
 
   const handleAddCategory = async (e) => {
     e.preventDefault();
-    
+
     if (!newCategory.trim()) {
       alert('Digite um nome para a categoria');
       return;
@@ -89,7 +91,7 @@ const Categories = () => {
           <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">
             Adicionar Nova Categoria
           </h3>
-          
+
           <form onSubmit={handleAddCategory} className="flex gap-4">
             <input
               type="text"
@@ -133,7 +135,7 @@ const Categories = () => {
                       {category.name}
                     </span>
                   </div>
-                  
+
                   <button
                     onClick={() => handleDelete(category.id, category.name)}
                     disabled={loading}
