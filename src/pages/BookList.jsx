@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { collection, query, onSnapshot, orderBy, where } from 'firebase/firestore';
+import { collection, query, onSnapshot, where } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { useAuth } from '../contexts/AuthContext';
 import BookCard from '../components/BookCard';
@@ -11,6 +11,7 @@ const BookList = () => {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
   const [categoryFilter, setCategoryFilter] = useState('all');
+  const [sagaFilter, setSagaFilter] = useState('all'); // NOVO FILTRO
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -19,8 +20,7 @@ const BookList = () => {
     
     const q = query(
       collection(db, 'books'), 
-      where('userId', '==', user.uid),
-      orderBy('createdAt', 'desc')
+      where('userId', '==', user.uid)
     );
     
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -28,6 +28,12 @@ const BookList = () => {
         id: doc.id,
         ...doc.data()
       }));
+      // Ordenar por data de criação (mais recentes primeiro)
+      booksData.sort((a, b) => {
+        const dateA = a.createdAt?.toDate() || new Date(0);
+        const dateB = b.createdAt?.toDate() || new Date(0);
+        return dateB - dateA;
+      });
       setBooks(booksData);
       setLoading(false);
     }, (error) => {
@@ -43,10 +49,21 @@ const BookList = () => {
   };
 
   const categories = ['all', ...new Set(books.map(book => book.category))];
+  const sagas = ['all', ...new Set(books.map(book => book.saga).filter(Boolean))]; // NOVO
 
   const filteredBooks = books.filter(book => {
     if (categoryFilter !== 'all' && book.category !== categoryFilter) {
       return false;
+    }
+    
+    // NOVO: Filtro por saga
+    if (sagaFilter !== 'all') {
+      if (sagaFilter === 'sem-saga' && book.saga) {
+        return false;
+      }
+      if (sagaFilter !== 'sem-saga' && book.saga !== sagaFilter) {
+        return false;
+      }
     }
     
     if (filter === 'read') return book.read;
@@ -106,6 +123,24 @@ const BookList = () => {
               <option value="all">Todas</option>
               {categories.filter(c => c !== 'all').map(category => (
                 <option key={category} value={category}>{category}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* NOVO FILTRO: SAGA */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Filtrar por saga:
+            </label>
+            <select
+              value={sagaFilter}
+              onChange={(e) => setSagaFilter(e.target.value)}
+              className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-purple-500"
+            >
+              <option value="all">Todas</option>
+              <option value="sem-saga">Sem saga</option>
+              {sagas.filter(s => s !== 'all').map(saga => (
+                <option key={saga} value={saga}>{saga}</option>
               ))}
             </select>
           </div>

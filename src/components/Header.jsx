@@ -18,41 +18,49 @@ const Header = ({ darkMode, setDarkMode }) => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
-            📚 Minha Lista de Leitura
+            <a href="/">
+              📚 Lista de Leitura
+            </a>
           </h1>
-          
+
           <nav className="flex items-center gap-6">
             <Link
               to="/"
-              className={`font-medium transition-colors ${
-                location.pathname === '/'
-                  ? 'text-blue-600 dark:text-blue-400'
-                  : 'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
-              }`}
+              className={`font-medium transition-colors ${location.pathname === '/'
+                ? 'text-blue-600 dark:text-blue-400'
+                : 'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
+                }`}
             >
               Meus Livros
             </Link>
             <Link
               to="/adicionar"
-              className={`font-medium transition-colors ${
-                location.pathname === '/adicionar'
-                  ? 'text-blue-600 dark:text-blue-400'
-                  : 'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
-              }`}
+              className={`font-medium transition-colors ${location.pathname === '/adicionar'
+                ? 'text-blue-600 dark:text-blue-400'
+                : 'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
+                }`}
             >
               Adicionar Livro
             </Link>
             <Link
               to="/categorias"
-              className={`font-medium transition-colors ${
-                location.pathname === '/categorias'
-                  ? 'text-blue-600 dark:text-blue-400'
-                  : 'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
-              }`}
+              className={`font-medium transition-colors ${location.pathname === '/categorias'
+                ? 'text-blue-600 dark:text-blue-400'
+                : 'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
+                }`}
             >
               Categorias
             </Link>
-            
+            <Link
+              to="/sagas"
+              className={`font-medium transition-colors ${location.pathname === '/sagas'
+                ? 'text-purple-600 dark:text-purple-400'
+                : 'text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400'
+                }`}
+            >
+              Sagas
+            </Link>
+
             <button
               onClick={() => setDarkMode(!darkMode)}
               className="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
@@ -71,7 +79,7 @@ const Header = ({ darkMode, setDarkMode }) => {
             )}
           </nav>
         </div>
-        
+
         {user && (
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
             Logado como: {user.email}

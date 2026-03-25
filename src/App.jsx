@@ -6,6 +6,7 @@ import Header from './components/Header';
 import BookList from './pages/BookList';
 import AddBook from './pages/AddBook';
 import Categories from './pages/Categories';
+import Sagas from './pages/Sagas';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 
@@ -43,6 +44,7 @@ function App() {
                     <Route path="/" element={<BookList />} />
                     <Route path="/adicionar" element={<AddBook />} />
                     <Route path="/categorias" element={<Categories />} />
+                    <Route path="/sagas" element={<Sagas />} />
                     <Route path="*" element={<Navigate to="/" replace />} />
                   </Routes>
                 </ProtectedRoute>

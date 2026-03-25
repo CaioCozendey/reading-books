@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { collection, addDoc, doc, updateDoc, serverTimestamp, query, onSnapshot, orderBy, where } from 'firebase/firestore';
+import { collection, addDoc, doc, updateDoc, serverTimestamp, query, onSnapshot, where } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -15,35 +15,55 @@ const AddBook = () => {
     imageUrl: '',
     purchaseLink: '',
     category: '',
+    saga: '', // NOVO CAMPO
     purchased: false,
     read: false
   });
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [sagas, setSagas] = useState([]); // NOVO ESTADO
 
   // Carregar categorias do Firebase (do usuário logado)
-// Carregar categorias do Firebase (do usuário logado)
-useEffect(() => {
-  if (!user) return;
-  
-  const q = query(
-    collection(db, 'categories'),
-    where('userId', '==', user.uid)
-    // Removemos o orderBy('name') temporariamente
-  );
-  
-  const unsubscribe = onSnapshot(q, (snapshot) => {
-    const categoriesData = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
-    // Ordenamos no JavaScript ao invés do Firestore
-    categoriesData.sort((a, b) => a.name.localeCompare(b.name));
-    setCategories(categoriesData);
-  });
+  useEffect(() => {
+    if (!user) return;
+    
+    const q = query(
+      collection(db, 'categories'),
+      where('userId', '==', user.uid)
+    );
+    
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const categoriesData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      categoriesData.sort((a, b) => a.name.localeCompare(b.name));
+      setCategories(categoriesData);
+    });
 
-  return () => unsubscribe();
-}, [user]);
+    return () => unsubscribe();
+  }, [user]);
+
+  // NOVO: Carregar sagas do Firebase (do usuário logado)
+  useEffect(() => {
+    if (!user) return;
+    
+    const q = query(
+      collection(db, 'sagas'),
+      where('userId', '==', user.uid)
+    );
+    
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const sagasData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      sagasData.sort((a, b) => a.name.localeCompare(b.name));
+      setSagas(sagasData);
+    });
+
+    return () => unsubscribe();
+  }, [user]);
 
   useEffect(() => {
     if (editBook) {
@@ -52,6 +72,7 @@ useEffect(() => {
         imageUrl: editBook.imageUrl || '',
         purchaseLink: editBook.purchaseLink || '',
         category: editBook.category || '',
+        saga: editBook.saga || '', // NOVO CAMPO
         purchased: editBook.purchased || false,
         read: editBook.read || false
       });
@@ -89,7 +110,7 @@ useEffect(() => {
         // Adicionar novo livro
         await addDoc(collection(db, 'books'), {
           ...formData,
-          userId: user.uid, // Adiciona o ID do usuário
+          userId: user.uid,
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp()
         });
@@ -210,6 +231,36 @@ useEffect(() => {
                 className="text-blue-600 dark:text-blue-400 hover:underline"
               >
                 Categorias
+              </button>
+            </p>
+          </div>
+
+          {/* NOVO CAMPO: SAGA */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Saga (Opcional)
+            </label>
+            <select
+              name="saga"
+              value={formData.saga}
+              onChange={handleChange}
+              className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-purple-500"
+            >
+              <option value="">Nenhuma saga</option>
+              {sagas.map(saga => (
+                <option key={saga.id} value={saga.name}>
+                  {saga.name}
+                </option>
+              ))}
+            </select>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              Use sagas para agrupar livros de uma mesma série. Gerencie em{' '}
+              <button
+                type="button"
+                onClick={() => navigate('/sagas')}
+                className="text-purple-600 dark:text-purple-400 hover:underline"
+              >
+                Sagas
               </button>
             </p>
           </div>
