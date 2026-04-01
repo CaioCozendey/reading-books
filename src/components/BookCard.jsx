@@ -53,7 +53,7 @@ const BookCard = ({ book, onEdit }) => {
         </div>
       </div>
       
-      <div className="p-4">
+      <div className="p-4 h-60 flex flex-col">
         <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2 line-clamp-2">
           {book.title}
         </h3>
@@ -93,7 +93,7 @@ const BookCard = ({ book, onEdit }) => {
           </label>
         </div>
         
-        <div className="flex gap-2">
+        <div className="flex gap-2 mt-auto">
           <button
             onClick={() => onEdit(book)}
             className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg transition-colors"
