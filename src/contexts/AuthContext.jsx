@@ -4,7 +4,8 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
-  onAuthStateChanged
+  onAuthStateChanged,
+  sendPasswordResetEmail
 } from 'firebase/auth';
 
 const AuthContext = createContext();
@@ -58,12 +59,23 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // NOVA FUNÇÃO: Recuperação de senha
+  const resetPassword = async (email) => {
+    try {
+      await sendPasswordResetEmail(auth, email);
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: error.message };
+    }
+  };
+
   const value = {
     user,
     loading,
     signup,
     login,
-    logout
+    logout,
+    resetPassword // NOVO
   };
 
   return (

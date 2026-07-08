@@ -9,6 +9,7 @@ import Categories from './pages/Categories';
 import Sagas from './pages/Sagas';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import ForgotPassword from './pages/ForgotPassword';
 
 function App() {
   const [darkMode, setDarkMode] = useState(() => {
@@ -33,7 +34,8 @@ function App() {
             {/* Rotas públicas */}
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            
+            <Route path="/esqueci-senha" element={<ForgotPassword />} />
+
             {/* Rotas protegidas */}
             <Route
               path="/*"

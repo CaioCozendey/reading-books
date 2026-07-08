@@ -20,7 +20,6 @@ const Login = () => {
     if (result.success) {
       navigate('/');
     } else {
-      // Traduzir erros comuns do Firebase
       let errorMessage = result.error;
       if (result.error.includes('user-not-found') || result.error.includes('wrong-password')) {
         errorMessage = 'Email ou senha incorretos';
@@ -73,9 +72,14 @@ const Login = () => {
             </div>
             
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Senha
-              </label>
+              <div className="flex items-center justify-between mb-2">
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                  Senha
+                </label>
+                <Link to="/esqueci-senha" className="text-sm text-blue-600 hover:text-blue-500 dark:text-blue-400">
+                  Esqueceu a senha?
+                </Link>
+              </div>
               <input
                 id="password"
                 name="password"
