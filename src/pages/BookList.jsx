@@ -67,7 +67,7 @@ const BookList = () => {
     }
     
     if (filter === 'read') return book.read;
-    if (filter === 'unread') return !book.read;
+    if (filter === 'unread') return !book.read - !book.purchased;
     if (filter === 'purchased') return book.purchased;
     if (filter === 'notPurchased') return !book.purchased;
     return true;
