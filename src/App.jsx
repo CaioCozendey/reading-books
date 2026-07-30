@@ -10,6 +10,7 @@ import Sagas from './pages/Sagas';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import ForgotPassword from './pages/ForgotPassword';
+import SharedList from './pages/SharedList';
 
 function App() {
   const [darkMode, setDarkMode] = useState(() => {
@@ -35,6 +36,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/esqueci-senha" element={<ForgotPassword />} />
+            <Route path="/compartilhar/:shareId" element={<SharedList />} />
 
             {/* Rotas protegidas */}
             <Route
