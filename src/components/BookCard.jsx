@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '../config/firebase';
 
 const BookCard = ({ book, onEdit }) => {
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleToggle = async (field) => {
     setLoading(true);
@@ -33,7 +35,10 @@ const BookCard = ({ book, onEdit }) => {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-transform hover:scale-105">
+    <div
+      onClick={() => navigate(`/livro/${book.id}`)}
+      className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden transition-transform hover:scale-105 cursor-pointer"
+    >
       <div className="relative h-80 bg-gray-200 dark:bg-gray-700">
         {book.imageUrl ? (
           <img
@@ -63,13 +68,14 @@ const BookCard = ({ book, onEdit }) => {
             href={book.purchaseLink}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
             className="text-blue-600 dark:text-blue-400 hover:underline text-sm mb-3 block"
           >
             🔗 Ver onde comprar
           </a>
         )}
         
-        <div className="space-y-2 mb-4">
+        <div className="space-y-2 mb-4" onClick={(e) => e.stopPropagation()}>
           <label className="flex items-center gap-2 cursor-pointer">
             <input
               type="checkbox"
@@ -93,7 +99,7 @@ const BookCard = ({ book, onEdit }) => {
           </label>
         </div>
         
-        <div className="flex gap-2 mt-auto">
+        <div className="flex gap-2 mt-auto" onClick={(e) => e.stopPropagation()}>
           <button
             onClick={() => onEdit(book)}
             className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg transition-colors"

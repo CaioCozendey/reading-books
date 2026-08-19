@@ -11,6 +11,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import ForgotPassword from './pages/ForgotPassword';
 import SharedList from './pages/SharedList';
+import BookDetail from './pages/BookDetail';
 
 function App() {
   const [darkMode, setDarkMode] = useState(() => {
@@ -49,6 +50,7 @@ function App() {
                     <Route path="/adicionar" element={<AddBook />} />
                     <Route path="/categorias" element={<Categories />} />
                     <Route path="/sagas" element={<Sagas />} />
+                    <Route path="/livro/:bookId" element={<BookDetail />} />
                     <Route path="*" element={<Navigate to="/" replace />} />
                   </Routes>
                 </ProtectedRoute>

@@ -6,6 +6,29 @@ const Dashboard = ({ books }) => {
     toRead: books.filter(book => !book.read).length
   };
 
+  // Junta todas as sessões de leitura de todos os livros
+  const allSessions = books.flatMap(book => book.readingSessions || []);
+
+  const totalPagesReadAll = allSessions.reduce((sum, s) => sum + Number(s.pages || 0), 0);
+
+  const formatDateKey = (date) => {
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  };
+
+  const today = new Date();
+  const cutoff = new Date();
+  cutoff.setDate(today.getDate() - 29); // últimos 30 dias (incluindo hoje)
+  const cutoffKey = formatDateKey(cutoff);
+
+  const last30DaysPages = allSessions
+    .filter(s => s.date >= cutoffKey)
+    .reduce((sum, s) => sum + Number(s.pages || 0), 0);
+
+  const monthlyAverage = Math.round(last30DaysPages / 30);
+
   const statCards = [
     {
       title: 'Total de Livros',
@@ -38,11 +61,27 @@ const Dashboard = ({ books }) => {
       bgColor: 'bg-orange-500',
       textColor: 'text-orange-500',
       bgLight: 'bg-orange-50 dark:bg-orange-900/20'
+    },
+    {
+      title: 'Média de Páginas/Mês',
+      value: monthlyAverage,
+      icon: '📈',
+      bgColor: 'bg-teal-500',
+      textColor: 'text-teal-500',
+      bgLight: 'bg-teal-50 dark:bg-teal-900/20'
+    },
+    {
+      title: 'Total de Páginas Lidas',
+      value: totalPagesReadAll,
+      icon: '📄',
+      bgColor: 'bg-indigo-500',
+      textColor: 'text-indigo-500',
+      bgLight: 'bg-indigo-50 dark:bg-indigo-900/20'
     }
   ];
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 mb-8">
       {statCards.map((stat, index) => (
         <div
           key={index}
@@ -63,7 +102,7 @@ const Dashboard = ({ books }) => {
           </div>
           
           {/* Barra de progresso para "Lidos" */}
-          {stat.title === 'Lidos' && stats.total > 0 && (
+          {stat.title === 'Lidos' && stats.purchased > 0 && (
             <div className="mt-4">
               <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                 <div
