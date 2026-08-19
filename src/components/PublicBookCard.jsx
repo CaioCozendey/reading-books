@@ -26,12 +26,12 @@ const PublicBookCard = ({ book }) => {
           </div>
         )}
       </div>
-      
+
       <div className="p-4">
         <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2 line-clamp-2">
           {book.title}
         </h3>
-        
+
         {book.purchaseLink && (
           <a
             href={book.purchaseLink}
@@ -42,23 +42,27 @@ const PublicBookCard = ({ book }) => {
             🔗 Ver onde comprar
           </a>
         )}
-        
+
         {/* Badges estáticos - somente leitura, sem checkbox editável */}
         <div className="flex gap-2 mt-4">
-          <span className={`flex-1 text-center py-2 rounded-lg text-sm font-medium ${
-            book.purchased
-              ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300'
-              : 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400'
-          }`}>
-            {book.purchased ? '✅ Comprado' : '⬜ Não comprado'}
+          <span
+            className={`flex-1 text-center py-2 rounded-lg text-sm font-medium ${
+              book.purchased
+                ? "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300"
+                : "bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400"
+            }`}
+          >
+            {book.purchased ? "✅ Comprado" : "⬜ Não comprado"}
           </span>
-          
-          <span className={`flex-1 text-center py-2 rounded-lg text-sm font-medium ${
-            book.read
-              ? 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300'
-              : 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400'
-          }`}>
-            {book.read ? '✅ Já lido' : '⬜ Não lido'}
+
+          <span
+            className={`flex-1 text-center py-2 rounded-lg text-sm font-medium ${
+              book.read
+                ? "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300"
+                : "bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400"
+            }`}
+          >
+            {book.read ? "✅ Já lido" : "⬜ Não lido"}
           </span>
         </div>
       </div>

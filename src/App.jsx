@@ -1,30 +1,36 @@
-import { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './contexts/AuthContext';
-import ProtectedRoute from './components/ProtectedRoute';
-import Header from './components/Header';
-import BookList from './pages/BookList';
-import AddBook from './pages/AddBook';
-import Categories from './pages/Categories';
-import Sagas from './pages/Sagas';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
-import ForgotPassword from './pages/ForgotPassword';
-import SharedList from './pages/SharedList';
-import BookDetail from './pages/BookDetail';
+import { useState, useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { AuthProvider } from "./contexts/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Header from "./components/Header";
+import BookList from "./pages/BookList";
+import AddBook from "./pages/AddBook";
+import Categories from "./pages/Categories";
+import Sagas from "./pages/Sagas";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import ForgotPassword from "./pages/ForgotPassword";
+import SharedList from "./pages/SharedList";
+import BookDetail from "./pages/BookDetail";
+import Statistics from "./pages/Statistics";
 
 function App() {
   const [darkMode, setDarkMode] = useState(() => {
-    const saved = localStorage.getItem('darkMode');
+    const saved = localStorage.getItem("darkMode");
     return saved ? JSON.parse(saved) : false;
   });
 
   useEffect(() => {
-    localStorage.setItem('darkMode', JSON.stringify(darkMode));
+    localStorage.setItem("darkMode", JSON.stringify(darkMode));
     if (darkMode) {
-      document.documentElement.classList.add('dark');
+      document.documentElement.classList.add("dark");
     } else {
-      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.remove("dark");
     }
   }, [darkMode]);
 
@@ -51,6 +57,7 @@ function App() {
                     <Route path="/categorias" element={<Categories />} />
                     <Route path="/sagas" element={<Sagas />} />
                     <Route path="/livro/:bookId" element={<BookDetail />} />
+                    <Route path="/estatisticas" element={<Statistics />} />
                     <Route path="*" element={<Navigate to="/" replace />} />
                   </Routes>
                 </ProtectedRoute>

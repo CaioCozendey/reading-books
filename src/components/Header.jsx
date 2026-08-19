@@ -1,5 +1,5 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 const Header = ({ darkMode, setDarkMode }) => {
   const location = useLocation();
@@ -9,7 +9,7 @@ const Header = ({ darkMode, setDarkMode }) => {
   const handleLogout = async () => {
     const result = await logout();
     if (result.success) {
-      navigate('/login');
+      navigate("/login");
     }
   };
 
@@ -18,47 +18,60 @@ const Header = ({ darkMode, setDarkMode }) => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
           <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
-            <a href="/">
-              📚 Lista de Leitura
-            </a>
+            <a href="/">📚 Lista de Leitura</a>
           </h1>
 
           <nav className="flex items-center gap-6">
             <Link
               to="/"
-              className={`font-medium transition-colors ${location.pathname === '/'
-                ? 'text-blue-600 dark:text-blue-400'
-                : 'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
-                }`}
+              className={`font-medium transition-colors ${
+                location.pathname === "/"
+                  ? "text-blue-600 dark:text-blue-400"
+                  : "text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
+              }`}
             >
               Meus Livros
             </Link>
             <Link
               to="/adicionar"
-              className={`font-medium transition-colors ${location.pathname === '/adicionar'
-                ? 'text-blue-600 dark:text-blue-400'
-                : 'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
-                }`}
+              className={`font-medium transition-colors ${
+                location.pathname === "/adicionar"
+                  ? "text-blue-600 dark:text-blue-400"
+                  : "text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
+              }`}
             >
               Adicionar Livro
             </Link>
             <Link
               to="/categorias"
-              className={`font-medium transition-colors ${location.pathname === '/categorias'
-                ? 'text-blue-600 dark:text-blue-400'
-                : 'text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400'
-                }`}
+              className={`font-medium transition-colors ${
+                location.pathname === "/categorias"
+                  ? "text-blue-600 dark:text-blue-400"
+                  : "text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
+              }`}
             >
               Categorias
             </Link>
             <Link
               to="/sagas"
-              className={`font-medium transition-colors ${location.pathname === '/sagas'
-                ? 'text-purple-600 dark:text-purple-400'
-                : 'text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400'
-                }`}
+              className={`font-medium transition-colors ${
+                location.pathname === "/sagas"
+                  ? "text-purple-600 dark:text-purple-400"
+                  : "text-gray-600 dark:text-gray-300 hover:text-purple-600 dark:hover:text-purple-400"
+              }`}
             >
               Sagas
+            </Link>
+
+            <Link
+              to="/estatisticas"
+              className={`font-medium transition-colors ${
+                location.pathname === "/estatisticas"
+                  ? "text-blue-600 dark:text-blue-400"
+                  : "text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
+              }`}
+            >
+              Estatísticas
             </Link>
 
             <button
@@ -66,7 +79,7 @@ const Header = ({ darkMode, setDarkMode }) => {
               className="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
               aria-label="Alternar modo escuro"
             >
-              {darkMode ? '☀️' : '🌙'}
+              {darkMode ? "☀️" : "🌙"}
             </button>
 
             {user && (

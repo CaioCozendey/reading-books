@@ -1,17 +1,17 @@
 const formatDateKey = (date) => {
   const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, '0');
-  const d = String(date.getDate()).padStart(2, '0');
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
   return `${y}-${m}-${d}`;
 };
 
 const getColorClass = (pages, maxPages) => {
-  if (!pages || pages === 0) return 'bg-gray-200 dark:bg-gray-700';
+  if (!pages || pages === 0) return "bg-gray-200 dark:bg-gray-700";
   const ratio = pages / maxPages;
-  if (ratio > 0.75) return 'bg-green-800 dark:bg-green-400';
-  if (ratio > 0.5) return 'bg-green-600 dark:bg-green-500';
-  if (ratio > 0.25) return 'bg-green-400 dark:bg-green-600';
-  return 'bg-green-200 dark:bg-green-800';
+  if (ratio > 0.75) return "bg-green-800 dark:bg-green-400";
+  if (ratio > 0.5) return "bg-green-600 dark:bg-green-500";
+  if (ratio > 0.25) return "bg-green-400 dark:bg-green-600";
+  return "bg-green-200 dark:bg-green-800";
 };
 
 /**
@@ -23,23 +23,27 @@ const ReadingHeatmap = ({ sessions = [], finished = false }) => {
   if (sessions.length === 0) {
     return (
       <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-        Nenhuma leitura registrada ainda. Adicione seu primeiro registro abaixo! 📖
+        Nenhuma leitura registrada ainda. Adicione seu primeiro registro abaixo!
+        📖
       </div>
     );
   }
 
   // Agrupa páginas lidas por dia (soma múltiplos registros do mesmo dia)
   const pagesByDay = {};
-  sessions.forEach(session => {
-    pagesByDay[session.date] = (pagesByDay[session.date] || 0) + Number(session.pages || 0);
+  sessions.forEach((session) => {
+    pagesByDay[session.date] =
+      (pagesByDay[session.date] || 0) + Number(session.pages || 0);
   });
 
   const dates = Object.keys(pagesByDay).sort();
   const firstDateStr = dates[0];
-  const lastDateStr = finished ? dates[dates.length - 1] : formatDateKey(new Date());
+  const lastDateStr = finished
+    ? dates[dates.length - 1]
+    : formatDateKey(new Date());
 
-  const startDate = new Date(firstDateStr + 'T00:00:00');
-  const endDate = new Date(lastDateStr + 'T00:00:00');
+  const startDate = new Date(firstDateStr + "T00:00:00");
+  const endDate = new Date(lastDateStr + "T00:00:00");
 
   // Recua até o domingo da semana inicial, para alinhar como no GitHub
   const gridStart = new Date(startDate);
@@ -52,7 +56,7 @@ const ReadingHeatmap = ({ sessions = [], finished = false }) => {
     days.push({
       date: key,
       pages: pagesByDay[key] || 0,
-      inRange: cursor >= startDate && cursor <= endDate
+      inRange: cursor >= startDate && cursor <= endDate,
     });
     cursor.setDate(cursor.getDate() + 1);
   }
@@ -73,9 +77,11 @@ const ReadingHeatmap = ({ sessions = [], finished = false }) => {
             {week.map((day, dIndex) => (
               <div
                 key={dIndex}
-                title={day.inRange ? `${day.date}: ${day.pages} páginas` : ''}
+                title={day.inRange ? `${day.date}: ${day.pages} páginas` : ""}
                 className={`w-3 h-3 rounded-sm ${
-                  day.inRange ? getColorClass(day.pages, maxPages) : 'bg-transparent'
+                  day.inRange
+                    ? getColorClass(day.pages, maxPages)
+                    : "bg-transparent"
                 }`}
               />
             ))}

@@ -1,8 +1,17 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { collection, addDoc, doc, updateDoc, serverTimestamp, query, onSnapshot, where } from 'firebase/firestore';
-import { db } from '../config/firebase';
-import { useAuth } from '../contexts/AuthContext';
+import { useState, useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import {
+  collection,
+  addDoc,
+  doc,
+  updateDoc,
+  serverTimestamp,
+  query,
+  onSnapshot,
+  where,
+} from "firebase/firestore";
+import { db } from "../config/firebase";
+import { useAuth } from "../contexts/AuthContext";
 
 const AddBook = () => {
   const navigate = useNavigate();
@@ -11,13 +20,13 @@ const AddBook = () => {
   const { user } = useAuth();
 
   const [formData, setFormData] = useState({
-    title: '',
-    imageUrl: '',
-    purchaseLink: '',
-    category: '',
-    saga: '', // NOVO CAMPO
+    title: "",
+    imageUrl: "",
+    purchaseLink: "",
+    category: "",
+    saga: "", // NOVO CAMPO
     purchased: false,
-    read: false
+    read: false,
   });
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState([]);
@@ -26,16 +35,16 @@ const AddBook = () => {
   // Carregar categorias do Firebase (do usuário logado)
   useEffect(() => {
     if (!user) return;
-    
+
     const q = query(
-      collection(db, 'categories'),
-      where('userId', '==', user.uid)
+      collection(db, "categories"),
+      where("userId", "==", user.uid),
     );
-    
+
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const categoriesData = snapshot.docs.map(doc => ({
+      const categoriesData = snapshot.docs.map((doc) => ({
         id: doc.id,
-        ...doc.data()
+        ...doc.data(),
       }));
       categoriesData.sort((a, b) => a.name.localeCompare(b.name));
       setCategories(categoriesData);
@@ -47,16 +56,13 @@ const AddBook = () => {
   // NOVO: Carregar sagas do Firebase (do usuário logado)
   useEffect(() => {
     if (!user) return;
-    
-    const q = query(
-      collection(db, 'sagas'),
-      where('userId', '==', user.uid)
-    );
-    
+
+    const q = query(collection(db, "sagas"), where("userId", "==", user.uid));
+
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const sagasData = snapshot.docs.map(doc => ({
+      const sagasData = snapshot.docs.map((doc) => ({
         id: doc.id,
-        ...doc.data()
+        ...doc.data(),
       }));
       sagasData.sort((a, b) => a.name.localeCompare(b.name));
       setSagas(sagasData);
@@ -68,30 +74,30 @@ const AddBook = () => {
   useEffect(() => {
     if (editBook) {
       setFormData({
-        title: editBook.title || '',
-        imageUrl: editBook.imageUrl || '',
-        purchaseLink: editBook.purchaseLink || '',
-        category: editBook.category || '',
-        saga: editBook.saga || '', // NOVO CAMPO
+        title: editBook.title || "",
+        imageUrl: editBook.imageUrl || "",
+        purchaseLink: editBook.purchaseLink || "",
+        category: editBook.category || "",
+        saga: editBook.saga || "", // NOVO CAMPO
         purchased: editBook.purchased || false,
-        read: editBook.read || false
+        read: editBook.read || false,
       });
     }
   }, [editBook]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!formData.title.trim() || !formData.category.trim()) {
-      alert('Por favor, preencha o título e a categoria');
+      alert("Por favor, preencha o título e a categoria");
       return;
     }
 
@@ -100,29 +106,29 @@ const AddBook = () => {
     try {
       if (editBook) {
         // Atualizar livro existente
-        const bookRef = doc(db, 'books', editBook.id);
+        const bookRef = doc(db, "books", editBook.id);
         await updateDoc(bookRef, {
           ...formData,
-          updatedAt: serverTimestamp()
+          updatedAt: serverTimestamp(),
         });
-        alert('Livro atualizado com sucesso!');
+        alert("Livro atualizado com sucesso!");
       } else {
         // Adicionar novo livro
-        await addDoc(collection(db, 'books'), {
+        await addDoc(collection(db, "books"), {
           ...formData,
           userId: user.uid,
           createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp()
+          updatedAt: serverTimestamp(),
         });
-        alert('Livro adicionado com sucesso!');
+        alert("Livro adicionado com sucesso!");
       }
-      
-      navigate('/');
+
+      navigate("/");
     } catch (error) {
-      console.error('Erro ao salvar livro:', error);
-      alert('Erro ao salvar o livro. Tente novamente.');
+      console.error("Erro ao salvar livro:", error);
+      alert("Erro ao salvar o livro. Tente novamente.");
     }
-    
+
     setLoading(false);
   };
 
@@ -130,9 +136,9 @@ const AddBook = () => {
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-2xl mx-auto">
         <h2 className="text-3xl font-bold text-gray-800 dark:text-white mb-8">
-          {editBook ? 'Editar Livro' : 'Adicionar Novo Livro'}
+          {editBook ? "Editar Livro" : "Adicionar Novo Livro"}
         </h2>
-        
+
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -163,13 +169,15 @@ const AddBook = () => {
             />
             {formData.imageUrl && (
               <div className="mt-4">
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">Preview:</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                  Preview:
+                </p>
                 <img
                   src={formData.imageUrl}
                   alt="Preview"
                   className="w-48 h-64 object-cover rounded-lg"
                   onError={(e) => {
-                    e.target.style.display = 'none';
+                    e.target.style.display = "none";
                   }}
                 />
               </div>
@@ -201,7 +209,7 @@ const AddBook = () => {
                 </p>
                 <button
                   type="button"
-                  onClick={() => navigate('/categorias')}
+                  onClick={() => navigate("/categorias")}
                   className="text-blue-600 dark:text-blue-400 hover:underline text-sm font-medium"
                 >
                   → Ir para Gerenciar Categorias
@@ -216,7 +224,7 @@ const AddBook = () => {
                 className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-blue-500"
               >
                 <option value="">Selecione uma categoria</option>
-                {categories.map(category => (
+                {categories.map((category) => (
                   <option key={category.id} value={category.name}>
                     {category.name}
                   </option>
@@ -224,10 +232,10 @@ const AddBook = () => {
               </select>
             )}
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              Você pode gerenciar suas categorias na página{' '}
+              Você pode gerenciar suas categorias na página{" "}
               <button
                 type="button"
-                onClick={() => navigate('/categorias')}
+                onClick={() => navigate("/categorias")}
                 className="text-blue-600 dark:text-blue-400 hover:underline"
               >
                 Categorias
@@ -247,17 +255,17 @@ const AddBook = () => {
               className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white focus:ring-2 focus:ring-purple-500"
             >
               <option value="">Nenhuma saga</option>
-              {sagas.map(saga => (
+              {sagas.map((saga) => (
                 <option key={saga.id} value={saga.name}>
                   {saga.name}
                 </option>
               ))}
             </select>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-              Use sagas para agrupar livros de uma mesma série. Gerencie em{' '}
+              Use sagas para agrupar livros de uma mesma série. Gerencie em{" "}
               <button
                 type="button"
-                onClick={() => navigate('/sagas')}
+                onClick={() => navigate("/sagas")}
                 className="text-purple-600 dark:text-purple-400 hover:underline"
               >
                 Sagas
@@ -276,7 +284,7 @@ const AddBook = () => {
               />
               <span className="text-gray-700 dark:text-gray-300">Comprado</span>
             </label>
-            
+
             <label className="flex items-center gap-3 cursor-pointer">
               <input
                 type="checkbox"
@@ -295,11 +303,15 @@ const AddBook = () => {
               disabled={loading}
               className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Salvando...' : editBook ? 'Atualizar Livro' : 'Adicionar Livro'}
+              {loading
+                ? "Salvando..."
+                : editBook
+                  ? "Atualizar Livro"
+                  : "Adicionar Livro"}
             </button>
             <button
               type="button"
-              onClick={() => navigate('/')}
+              onClick={() => navigate("/")}
               className="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-medium py-3 rounded-lg transition-colors"
             >
               Cancelar

@@ -1,26 +1,31 @@
-import { useState, useEffect } from 'react';
-import { collection, addDoc, deleteDoc, doc, onSnapshot, query, where } from 'firebase/firestore';
-import { db } from '../config/firebase';
-import { useAuth } from '../contexts/AuthContext';
+import { useState, useEffect } from "react";
+import {
+  collection,
+  addDoc,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore";
+import { db } from "../config/firebase";
+import { useAuth } from "../contexts/AuthContext";
 
 const Sagas = () => {
   const [sagas, setSagas] = useState([]);
-  const [newSaga, setNewSaga] = useState('');
+  const [newSaga, setNewSaga] = useState("");
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
 
   useEffect(() => {
     if (!user) return;
-    
-    const q = query(
-      collection(db, 'sagas'),
-      where('userId', '==', user.uid)
-    );
-    
+
+    const q = query(collection(db, "sagas"), where("userId", "==", user.uid));
+
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const sagasData = snapshot.docs.map(doc => ({
+      const sagasData = snapshot.docs.map((doc) => ({
         id: doc.id,
-        ...doc.data()
+        ...doc.data(),
       }));
       // Ordenar no JavaScript
       sagasData.sort((a, b) => a.name.localeCompare(b.name));
@@ -32,34 +37,34 @@ const Sagas = () => {
 
   const handleAddSaga = async (e) => {
     e.preventDefault();
-    
+
     if (!newSaga.trim()) {
-      alert('Digite um nome para a saga');
+      alert("Digite um nome para a saga");
       return;
     }
 
     // Verifica se já existe
     const exists = sagas.some(
-      saga => saga.name.toLowerCase() === newSaga.trim().toLowerCase()
+      (saga) => saga.name.toLowerCase() === newSaga.trim().toLowerCase(),
     );
 
     if (exists) {
-      alert('Esta saga já existe!');
+      alert("Esta saga já existe!");
       return;
     }
 
     setLoading(true);
     try {
-      await addDoc(collection(db, 'sagas'), {
+      await addDoc(collection(db, "sagas"), {
         name: newSaga.trim(),
         userId: user.uid,
-        createdAt: new Date()
+        createdAt: new Date(),
       });
-      setNewSaga('');
-      alert('Saga adicionada com sucesso!');
+      setNewSaga("");
+      alert("Saga adicionada com sucesso!");
     } catch (error) {
-      console.error('Erro ao adicionar saga:', error);
-      alert('Erro ao adicionar saga');
+      console.error("Erro ao adicionar saga:", error);
+      alert("Erro ao adicionar saga");
     }
     setLoading(false);
   };
@@ -68,11 +73,11 @@ const Sagas = () => {
     if (window.confirm(`Tem certeza que deseja excluir a saga "${name}"?`)) {
       setLoading(true);
       try {
-        await deleteDoc(doc(db, 'sagas', id));
-        alert('Saga excluída com sucesso!');
+        await deleteDoc(doc(db, "sagas", id));
+        alert("Saga excluída com sucesso!");
       } catch (error) {
-        console.error('Erro ao excluir saga:', error);
-        alert('Erro ao excluir saga');
+        console.error("Erro ao excluir saga:", error);
+        alert("Erro ao excluir saga");
       }
       setLoading(false);
     }
@@ -90,7 +95,7 @@ const Sagas = () => {
           <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">
             Adicionar Nova Saga
           </h3>
-          
+
           <form onSubmit={handleAddSaga} className="flex gap-4">
             <input
               type="text"
@@ -104,7 +109,7 @@ const Sagas = () => {
               disabled={loading}
               className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Adicionando...' : 'Adicionar'}
+              {loading ? "Adicionando..." : "Adicionar"}
             </button>
           </form>
         </div>
@@ -123,7 +128,7 @@ const Sagas = () => {
             </p>
           ) : (
             <div className="space-y-2">
-              {sagas.map(saga => (
+              {sagas.map((saga) => (
                 <div
                   key={saga.id}
                   className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors"
@@ -134,7 +139,7 @@ const Sagas = () => {
                       {saga.name}
                     </span>
                   </div>
-                  
+
                   <button
                     onClick={() => handleDelete(saga.id, saga.name)}
                     disabled={loading}
@@ -151,7 +156,9 @@ const Sagas = () => {
         {/* Dica */}
         <div className="mt-6 p-4 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg">
           <p className="text-sm text-purple-800 dark:text-purple-200">
-            💡 <strong>Dica:</strong> As sagas que você adicionar aqui aparecerão como opção quando for cadastrar um novo livro. Use sagas para agrupar livros de uma mesma série ou universo!
+            💡 <strong>Dica:</strong> As sagas que você adicionar aqui
+            aparecerão como opção quando for cadastrar um novo livro. Use sagas
+            para agrupar livros de uma mesma série ou universo!
           </p>
         </div>
       </div>

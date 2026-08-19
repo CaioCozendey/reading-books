@@ -1,19 +1,19 @@
-import { createContext, useContext, useState, useEffect } from 'react';
-import { 
-  getAuth, 
+import { createContext, useContext, useState, useEffect } from "react";
+import {
+  getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
-  sendPasswordResetEmail
-} from 'firebase/auth';
+  sendPasswordResetEmail,
+} from "firebase/auth";
 
 const AuthContext = createContext();
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within AuthProvider');
+    throw new Error("useAuth must be used within AuthProvider");
   }
   return context;
 };
@@ -34,7 +34,11 @@ export const AuthProvider = ({ children }) => {
 
   const signup = async (email, password) => {
     try {
-      const result = await createUserWithEmailAndPassword(auth, email, password);
+      const result = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
       return { success: true, user: result.user };
     } catch (error) {
       return { success: false, error: error.message };
@@ -75,7 +79,7 @@ export const AuthProvider = ({ children }) => {
     signup,
     login,
     logout,
-    resetPassword // NOVO
+    resetPassword, // NOVO
   };
 
   return (

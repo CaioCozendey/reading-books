@@ -1,14 +1,14 @@
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { doc, onSnapshot, updateDoc } from 'firebase/firestore';
-import { db } from '../config/firebase';
-import { useAuth } from '../contexts/AuthContext';
-import ReadingHeatmap from '../components/ReadingHeatmap';
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { doc, onSnapshot, updateDoc } from "firebase/firestore";
+import { db } from "../config/firebase";
+import { useAuth } from "../contexts/AuthContext";
+import ReadingHeatmap from "../components/ReadingHeatmap";
 
 const formatDateKey = (date) => {
   const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, '0');
-  const d = String(date.getDate()).padStart(2, '0');
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
   return `${y}-${m}-${d}`;
 };
 
@@ -21,24 +21,24 @@ const BookDetail = () => {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
 
-  const [totalPagesInput, setTotalPagesInput] = useState('');
+  const [totalPagesInput, setTotalPagesInput] = useState("");
   const [savingTotal, setSavingTotal] = useState(false);
 
   const [sessionDate, setSessionDate] = useState(formatDateKey(new Date()));
-  const [sessionPages, setSessionPages] = useState('');
+  const [sessionPages, setSessionPages] = useState("");
   const [savingSession, setSavingSession] = useState(false);
 
   useEffect(() => {
     if (!user) return;
 
-    const bookRef = doc(db, 'books', bookId);
+    const bookRef = doc(db, "books", bookId);
     const unsubscribe = onSnapshot(
       bookRef,
       (snap) => {
         if (snap.exists() && snap.data().userId === user.uid) {
           const data = { id: snap.id, ...snap.data() };
           setBook(data);
-          setTotalPagesInput(data.totalPages || '');
+          setTotalPagesInput(data.totalPages || "");
         } else {
           setNotFound(true);
         }
@@ -47,7 +47,7 @@ const BookDetail = () => {
       () => {
         setNotFound(true);
         setLoading(false);
-      }
+      },
     );
 
     return () => unsubscribe();
@@ -55,17 +55,17 @@ const BookDetail = () => {
 
   const handleSaveTotalPages = async () => {
     if (!totalPagesInput || Number(totalPagesInput) <= 0) {
-      alert('Digite um número de páginas válido');
+      alert("Digite um número de páginas válido");
       return;
     }
     setSavingTotal(true);
     try {
-      await updateDoc(doc(db, 'books', bookId), {
-        totalPages: Number(totalPagesInput)
+      await updateDoc(doc(db, "books", bookId), {
+        totalPages: Number(totalPagesInput),
       });
     } catch (error) {
       console.error(error);
-      alert('Erro ao salvar total de páginas');
+      alert("Erro ao salvar total de páginas");
     }
     setSavingTotal(false);
   };
@@ -74,7 +74,7 @@ const BookDetail = () => {
     e.preventDefault();
     const pagesNum = Number(sessionPages);
     if (!pagesNum || pagesNum <= 0) {
-      alert('Digite uma quantidade de páginas válida');
+      alert("Digite uma quantidade de páginas válida");
       return;
     }
 
@@ -84,30 +84,32 @@ const BookDetail = () => {
         id: `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`,
         date: sessionDate,
         pages: pagesNum,
-        timestamp: Date.now()
+        timestamp: Date.now(),
       };
       const updatedSessions = [...(book.readingSessions || []), newSession];
-      await updateDoc(doc(db, 'books', bookId), {
-        readingSessions: updatedSessions
+      await updateDoc(doc(db, "books", bookId), {
+        readingSessions: updatedSessions,
       });
-      setSessionPages('');
+      setSessionPages("");
     } catch (error) {
       console.error(error);
-      alert('Erro ao registrar leitura');
+      alert("Erro ao registrar leitura");
     }
     setSavingSession(false);
   };
 
   const handleDeleteSession = async (sessionId) => {
-    if (!window.confirm('Excluir este registro de leitura?')) return;
+    if (!window.confirm("Excluir este registro de leitura?")) return;
     try {
-      const updatedSessions = (book.readingSessions || []).filter(s => s.id !== sessionId);
-      await updateDoc(doc(db, 'books', bookId), {
-        readingSessions: updatedSessions
+      const updatedSessions = (book.readingSessions || []).filter(
+        (s) => s.id !== sessionId,
+      );
+      await updateDoc(doc(db, "books", bookId), {
+        readingSessions: updatedSessions,
       });
     } catch (error) {
       console.error(error);
-      alert('Erro ao excluir registro');
+      alert("Erro ao excluir registro");
     }
   };
 
@@ -122,8 +124,13 @@ const BookDetail = () => {
   if (notFound || !book) {
     return (
       <div className="container mx-auto px-4 py-8 text-center">
-        <p className="text-gray-600 dark:text-gray-400 mb-4">Livro não encontrado.</p>
-        <button onClick={() => navigate('/')} className="text-blue-600 dark:text-blue-400 hover:underline">
+        <p className="text-gray-600 dark:text-gray-400 mb-4">
+          Livro não encontrado.
+        </p>
+        <button
+          onClick={() => navigate("/")}
+          className="text-blue-600 dark:text-blue-400 hover:underline"
+        >
           Voltar para Meus Livros
         </button>
       </div>
@@ -131,16 +138,24 @@ const BookDetail = () => {
   }
 
   const sessions = book.readingSessions || [];
-  const totalPagesRead = sessions.reduce((sum, s) => sum + Number(s.pages || 0), 0);
+  const totalPagesRead = sessions.reduce(
+    (sum, s) => sum + Number(s.pages || 0),
+    0,
+  );
   const totalPages = book.totalPages || 0;
-  const progressPercent = totalPages > 0 ? Math.min(100, Math.round((totalPagesRead / totalPages) * 100)) : 0;
+  const progressPercent =
+    totalPages > 0
+      ? Math.min(100, Math.round((totalPagesRead / totalPages) * 100))
+      : 0;
 
-  const sortedSessions = [...sessions].sort((a, b) => b.timestamp - a.timestamp);
+  const sortedSessions = [...sessions].sort(
+    (a, b) => b.timestamp - a.timestamp,
+  );
 
   return (
     <div className="container mx-auto px-4 py-8">
       <button
-        onClick={() => navigate('/')}
+        onClick={() => navigate("/")}
         className="text-blue-600 dark:text-blue-400 hover:underline mb-6 inline-block"
       >
         ← Voltar para Meus Livros
@@ -152,17 +167,29 @@ const BookDetail = () => {
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
             <div className="h-96 bg-gray-200 dark:bg-gray-700">
               {book.imageUrl ? (
-                <img src={book.imageUrl} alt={book.title} className="w-full h-full object-cover" />
+                <img
+                  src={book.imageUrl}
+                  alt={book.title}
+                  className="w-full h-full object-cover"
+                />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-6xl text-gray-400">📖</div>
+                <div className="w-full h-full flex items-center justify-center text-6xl text-gray-400">
+                  📖
+                </div>
               )}
             </div>
             <div className="p-4">
-              <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">{book.title}</h2>
+              <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">
+                {book.title}
+              </h2>
               <div className="flex flex-wrap gap-2 mb-3">
-                <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm">{book.category}</span>
+                <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-sm">
+                  {book.category}
+                </span>
                 {book.saga && (
-                  <span className="bg-purple-600 text-white px-3 py-1 rounded-full text-sm">{book.saga}</span>
+                  <span className="bg-purple-600 text-white px-3 py-1 rounded-full text-sm">
+                    {book.saga}
+                  </span>
                 )}
               </div>
               {book.purchaseLink && (
@@ -179,20 +206,20 @@ const BookDetail = () => {
                 <span
                   className={`flex-1 text-center py-2 rounded-lg font-medium ${
                     book.purchased
-                      ? 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300'
-                      : 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400'
+                      ? "bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300"
+                      : "bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400"
                   }`}
                 >
-                  {book.purchased ? '✅ Comprado' : '⬜ Não comprado'}
+                  {book.purchased ? "✅ Comprado" : "⬜ Não comprado"}
                 </span>
                 <span
                   className={`flex-1 text-center py-2 rounded-lg font-medium ${
                     book.read
-                      ? 'bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300'
-                      : 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400'
+                      ? "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300"
+                      : "bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400"
                   }`}
                 >
-                  {book.read ? '✅ Já lido' : '⬜ Não lido'}
+                  {book.read ? "✅ Já lido" : "⬜ Não lido"}
                 </span>
               </div>
             </div>
@@ -220,14 +247,16 @@ const BookDetail = () => {
                 disabled={savingTotal}
                 className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50"
               >
-                {savingTotal ? 'Salvando...' : 'Salvar'}
+                {savingTotal ? "Salvando..." : "Salvar"}
               </button>
             </div>
 
             {totalPages > 0 && (
               <div className="mt-4">
                 <div className="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-1">
-                  <span>{totalPagesRead} de {totalPages} páginas</span>
+                  <span>
+                    {totalPagesRead} de {totalPages} páginas
+                  </span>
                   <span>{progressPercent}%</span>
                 </div>
                 <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3">
@@ -242,10 +271,17 @@ const BookDetail = () => {
 
           {/* Registrar leitura */}
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-            <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">Registrar Leitura</h3>
-            <form onSubmit={handleAddSession} className="flex flex-wrap gap-3 items-end">
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
+              Registrar Leitura
+            </h3>
+            <form
+              onSubmit={handleAddSession}
+              className="flex flex-wrap gap-3 items-end"
+            >
               <div>
-                <label className="block text-sm text-gray-600 dark:text-gray-400 mb-1">Data</label>
+                <label className="block text-sm text-gray-600 dark:text-gray-400 mb-1">
+                  Data
+                </label>
                 <input
                   type="date"
                   value={sessionDate}
@@ -255,7 +291,9 @@ const BookDetail = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm text-gray-600 dark:text-gray-400 mb-1">Páginas lidas</label>
+                <label className="block text-sm text-gray-600 dark:text-gray-400 mb-1">
+                  Páginas lidas
+                </label>
                 <input
                   type="number"
                   min="1"
@@ -270,17 +308,20 @@ const BookDetail = () => {
                 disabled={savingSession}
                 className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors disabled:opacity-50"
               >
-                {savingSession ? 'Registrando...' : '+ Adicionar'}
+                {savingSession ? "Registrando..." : "+ Adicionar"}
               </button>
             </form>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-              Você pode registrar várias leituras no mesmo dia (ex: manhã e à noite).
+              Você pode registrar várias leituras no mesmo dia (ex: manhã e à
+              noite).
             </p>
           </div>
 
           {/* Heatmap */}
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-            <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">Histórico de Leitura</h3>
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-white mb-4">
+              Histórico de Leitura
+            </h3>
             <ReadingHeatmap sessions={sessions} finished={book.read} />
           </div>
 
@@ -291,13 +332,16 @@ const BookDetail = () => {
                 Registros ({sortedSessions.length})
               </h3>
               <div className="space-y-2 max-h-64 overflow-y-auto">
-                {sortedSessions.map(session => (
+                {sortedSessions.map((session) => (
                   <div
                     key={session.id}
                     className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
                   >
                     <span className="text-gray-700 dark:text-gray-300 text-sm">
-                      {new Date(session.date + 'T00:00:00').toLocaleDateString('pt-BR')} — {session.pages} páginas
+                      {new Date(session.date + "T00:00:00").toLocaleDateString(
+                        "pt-BR",
+                      )}{" "}
+                      — {session.pages} páginas
                     </span>
                     <button
                       onClick={() => handleDeleteSession(session.id)}

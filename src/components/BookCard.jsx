@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
-import { db } from '../config/firebase';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { doc, updateDoc, deleteDoc } from "firebase/firestore";
+import { db } from "../config/firebase";
 
 const BookCard = ({ book, onEdit }) => {
   const [loading, setLoading] = useState(false);
@@ -10,25 +10,25 @@ const BookCard = ({ book, onEdit }) => {
   const handleToggle = async (field) => {
     setLoading(true);
     try {
-      const bookRef = doc(db, 'books', book.id);
+      const bookRef = doc(db, "books", book.id);
       await updateDoc(bookRef, {
-        [field]: !book[field]
+        [field]: !book[field],
       });
     } catch (error) {
-      console.error('Erro ao atualizar:', error);
-      alert('Erro ao atualizar o livro');
+      console.error("Erro ao atualizar:", error);
+      alert("Erro ao atualizar o livro");
     }
     setLoading(false);
   };
 
   const handleDelete = async () => {
-    if (window.confirm('Tem certeza que deseja excluir este livro?')) {
+    if (window.confirm("Tem certeza que deseja excluir este livro?")) {
       setLoading(true);
       try {
-        await deleteDoc(doc(db, 'books', book.id));
+        await deleteDoc(doc(db, "books", book.id));
       } catch (error) {
-        console.error('Erro ao excluir:', error);
-        alert('Erro ao excluir o livro');
+        console.error("Erro ao excluir:", error);
+        alert("Erro ao excluir o livro");
       }
       setLoading(false);
     }
@@ -57,12 +57,12 @@ const BookCard = ({ book, onEdit }) => {
           </span>
         </div>
       </div>
-      
+
       <div className="p-4 h-60 flex flex-col">
         <h3 className="text-xl font-bold text-gray-800 dark:text-white mb-2 line-clamp-2">
           {book.title}
         </h3>
-        
+
         {book.purchaseLink && (
           <a
             href={book.purchaseLink}
@@ -74,32 +74,35 @@ const BookCard = ({ book, onEdit }) => {
             🔗 Ver onde comprar
           </a>
         )}
-        
+
         <div className="space-y-2 mb-4" onClick={(e) => e.stopPropagation()}>
           <label className="flex items-center gap-2 cursor-pointer">
             <input
               type="checkbox"
               checked={book.purchased || false}
-              onChange={() => handleToggle('purchased')}
+              onChange={() => handleToggle("purchased")}
               disabled={loading}
               className="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
             />
             <span className="text-gray-700 dark:text-gray-300">Comprado</span>
           </label>
-          
+
           <label className="flex items-center gap-2 cursor-pointer">
             <input
               type="checkbox"
               checked={book.read || false}
-              onChange={() => handleToggle('read')}
+              onChange={() => handleToggle("read")}
               disabled={loading}
               className="w-5 h-5 text-green-600 rounded focus:ring-2 focus:ring-green-500"
             />
             <span className="text-gray-700 dark:text-gray-300">Já lido</span>
           </label>
         </div>
-        
-        <div className="flex gap-2 mt-auto" onClick={(e) => e.stopPropagation()}>
+
+        <div
+          className="flex gap-2 mt-auto"
+          onClick={(e) => e.stopPropagation()}
+        >
           <button
             onClick={() => onEdit(book)}
             className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg transition-colors"
