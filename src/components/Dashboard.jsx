@@ -3,7 +3,7 @@ const Dashboard = ({ books }) => {
     total: books.length,
     read: books.filter((book) => book.read).length,
     purchased: books.filter((book) => book.purchased).length,
-    toRead: books.filter((book) => !book.read).length,
+    toRead: books.filter((book) => book.purchased && !book.read).length,
   };
 
   // Junta todas as sessões de leitura de todos os livros
@@ -204,9 +204,28 @@ const Dashboard = ({ books }) => {
                   }}
                 />
               </div>
-
               <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 text-right">
                 {Math.round((stats.read / stats.purchased) * 100)}% concluído
+              </p>
+            </div>
+          )}
+          {/* Barra de progresso para "Comprados" */}
+          {stat.title === "Comprados" && stats.purchased > 0 && (
+            <div className="mt-3">
+              
+              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
+                <div
+                  className={`${stat.bgColor} h-2 rounded-full transition-all duration-300`}
+                  style={{
+                    width: `${Math.min(
+                      (stats.purchased / stats.total) * 100,
+                      100,
+                    )}%`,
+                  }}
+                />
+              </div>
+              <p className="text-xs text-gray-600 dark:text-gray-400 mt-1 text-right">
+                {Math.round((stats.purchased / stats.total) * 100)}% concluído
               </p>
             </div>
           )}
